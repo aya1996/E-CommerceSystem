@@ -8,10 +8,12 @@ use App\Http\Resources\ProductResource;
 use App\Models\Image;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Traits\ImageTrait;
+
 
 class ProductController extends Controller
 {
-
+    use ImageTrait;
 
     public function index()
     {
@@ -25,28 +27,20 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
-
-
         $product = new Product();
         $product->name = $request->name;
         $product->price = $request->price;
         $product->description = $request->description;
 
         if ($request->hasfile('feature_image')) {
-            $image = $request->file('feature_image');
-            $name = time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/images');
-            $image->move($destinationPath, $name);
+            $name = $this->saveImage($request->file('feature_image'));
             $product->feature_image = $name;
         }
         $product->save();
         if ($request->hasfile('images')) {
 
             foreach ($request->file('images') as $image) {
-                // $name = $image->getClientOriginalName();
-                $name = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path() . '/images/', $name);
-                $images[] = $name;
+                $images[] = $this->saveImages($image);
             }
 
             $image = new Image();
@@ -54,7 +48,6 @@ class ProductController extends Controller
             $image->product_id = $product->id;
         }
         $image->save();
-
 
         $product->categories()->attach($request->categories);
         $product->colors()->attach($request->colors);
@@ -77,9 +70,7 @@ class ProductController extends Controller
 
             if ($request->hasfile('feature_image')) {
                 $image = $request->file('feature_image');
-                $name = time() . '.' . $image->getClientOriginalExtension();
-                $destinationPath = public_path('/images');
-                $image->move($destinationPath, $name);
+                $name = $this->saveImage($image);
                 $product->feature_image = $name;
             }
             $product->save();
@@ -88,17 +79,15 @@ class ProductController extends Controller
 
                 foreach ($request->file('images') as $image) {
                     // $name = $image->getClientOriginalName();
-                    $name = time() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path() . '/images/', $name);
-                    $images[] = $name;
+                    $images[] = $this->saveImages($image);
                 }
 
                 $image = new Image();
                 $image->path = json_encode($images);
                 $image->product_id = $product->id;
             }
-            
-            
+
+
             $product->categories()->sync($request->categories);
             $product->colors()->sync($request->colors);
             $product->sizes()->sync($request->sizes);
