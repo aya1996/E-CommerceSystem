@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\Image;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -18,7 +20,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        return Product::find($id);
+        return $this->handleResponse(new ProductResource(Product::find($id)), 200);
     }
 
     public function store(ProductRequest $request)
@@ -30,20 +32,33 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->description = $request->description;
 
-        $product->save();
-        if ($request->hasfile('image')) {
-            //$name = $this->saveImage($request->image);
-            // $book->image = $name;
-            $image = $request->file('image');
-            $name =  mt_rand() . '.' . $image->getClientOriginalExtension();
-
-
-            $image->move(public_path() . '/images/', $name);
+        if ($request->hasfile('feature_image')) {
+            $image = $request->file('feature_image');
+            $name = time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $name);
+            $product->feature_image = $name;
         }
-        $product->image = $name;
         $product->save();
+        if ($request->hasfile('images')) {
 
-        $product->categories()->attach($request->category_id);
+            foreach ($request->file('images') as $image) {
+                // $name = $image->getClientOriginalName();
+                $name = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path() . '/images/', $name);
+                $images[] = $name;
+            }
+
+            $image = new Image();
+            $image->path = json_encode($images);
+            $image->product_id = $product->id;
+        }
+        $image->save();
+
+
+        $product->categories()->attach($request->categories);
+        $product->colors()->attach($request->colors);
+        $product->sizes()->attach($request->sizes);
 
         return $this->handleResponse(new ProductResource($product), 201);
     }
@@ -60,15 +75,33 @@ class ProductController extends Controller
 
             $product->save();
 
-            if ($request->hasfile('image')) {
-                //$name = $this->saveImage($request->image);
-                // $book->image = $name;
-                $image = $request->file('image');
-                $name =  mt_rand() . '.' . $image->getClientOriginalExtension();
+            if ($request->hasfile('feature_image')) {
+                $image = $request->file('feature_image');
+                $name = time() . '.' . $image->getClientOriginalExtension();
+                $destinationPath = public_path('/images');
+                $image->move($destinationPath, $name);
+                $product->feature_image = $name;
             }
-            $product->image = $name;
             $product->save();
-            $product->categories()->sync($request->category_id);
+
+            if ($request->hasfile('images')) {
+
+                foreach ($request->file('images') as $image) {
+                    // $name = $image->getClientOriginalName();
+                    $name = time() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path() . '/images/', $name);
+                    $images[] = $name;
+                }
+
+                $image = new Image();
+                $image->path = json_encode($images);
+                $image->product_id = $product->id;
+            }
+            
+            
+            $product->categories()->sync($request->categories);
+            $product->colors()->sync($request->colors);
+            $product->sizes()->sync($request->sizes);
 
             return $this->handleResponse(new ProductResource($product), 200);
         } else {

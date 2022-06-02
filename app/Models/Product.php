@@ -14,16 +14,26 @@ class Product extends Model
         'price',
         'description',
         'image',
-        'category_id',
+        'categories',
     ];
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class);
     }
 
-    
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class);
+    }
 
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class);
+    }
 
-    
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
 }
