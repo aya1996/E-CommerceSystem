@@ -9,7 +9,7 @@ use App\Models\Image;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
-
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -69,6 +69,7 @@ class ProductController extends Controller
             $product->save();
 
             if ($request->hasfile('feature_image')) {
+                File::delete(public_path('images/' . $product-> feature_image));
                 $image = $request->file('feature_image');
                 $name = $this->saveImage($image);
                 $product->feature_image = $name;
@@ -76,7 +77,7 @@ class ProductController extends Controller
             $product->save();
 
             if ($request->hasfile('images')) {
-
+                File::delete(public_path('images/' . $product->images));
                 foreach ($request->file('images') as $image) {
                     // $name = $image->getClientOriginalName();
                     $images[] = $this->saveImages($image);
@@ -103,6 +104,8 @@ class ProductController extends Controller
         $product = Product::find($id);
         if ($product) {
             $product->delete();
+            File::delete(public_path('images/' . $product->feature_image));
+            File::delete(public_path('images/' . $product->images));
             return $this->handleResponse('Product deleted successfully', 200);
         } else {
             return $this->handleError('Product not found', [], 404);
