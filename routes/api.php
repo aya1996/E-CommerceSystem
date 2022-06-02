@@ -26,6 +26,12 @@ Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::post('/product', [ProductController::class, 'store']);
 Route::put('/products/{id}', [ProductController::class, 'update']);
 Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+Route::get('/filterbycategory/{id}', [ProductController::class, 'filterByCategory']);
+Route::get('/filterbysize/{id}', [ProductController::class, 'filterBySize']);
+Route::get('/filterbycolor/{id}', [ProductController::class, 'filterByColor']);
+Route::get('/search', [ProductController::class, 'filterByPrice']);
+
+
 
 
 Route::get('/categories', [CategoryController::class, 'index']);

@@ -17,7 +17,27 @@ class ProductController extends Controller
 
     public function index()
     {
-        return $this->handleResponse(ProductResource::collection(Product::all()), 200);
+        $productCategory = Product::query()->when(request('category_id'), function ($query) {
+            return $query->whereHas('categories', function ($query) {
+                return $query->where('category_id', request('category_id'));
+            });
+        })->when(request('size_id'), function ($query) {
+            return $query->whereHas('sizes', function ($query) {
+                return $query->where('size_id', request('size_id'));
+            });
+        })->when(request('color_id'), function ($query) {
+            return $query->whereHas('colors', function ($query) {
+                return $query->where('color_id', request('color_id'));
+            });
+        })->when(request('price'), function ($query) {
+            return $query->where('price', '>=', request('price'));
+        })->when(request('price_to'), function ($query) {
+            return $query->where('price', '<=', request('price_to'));
+        })->paginate(5);
+
+        return ProductResource::collection($productCategory);
+
+        // return $this->handleResponse(ProductResource::collection(Product::all()), 200);
     }
 
     public function show($id)
@@ -69,7 +89,7 @@ class ProductController extends Controller
             $product->save();
 
             if ($request->hasfile('feature_image')) {
-                File::delete(public_path('images/' . $product-> feature_image));
+                File::delete(public_path('images/' . $product->feature_image));
                 $image = $request->file('feature_image');
                 $name = $this->saveImage($image);
                 $product->feature_image = $name;
@@ -110,5 +130,13 @@ class ProductController extends Controller
         } else {
             return $this->handleError('Product not found', [], 404);
         }
+    }
+
+
+
+    public function search(Request $request)
+    {
+        $products = Product::where('name', 'like', '%' . $request->keyword . '%')->get();
+        return $this->handleResponse(ProductResource::collection($products), 200);
     }
 }
