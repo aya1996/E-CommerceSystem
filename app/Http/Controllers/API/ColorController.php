@@ -40,7 +40,7 @@ class Color extends Controller
         $color->code = $request->code;
         $color->save();
 
-        return $this->handleResponse(new ColorResource($color), 201);
+        return $this->handleResponse(new ColorResource($color), __('messages.color_added'), 201);
     }
 
     /**
@@ -55,7 +55,7 @@ class Color extends Controller
         if ($color) {
             return $this->handleResponse(new ColorResource($color), 200);
         } else {
-            return $this->handleError('Color not found', [], 404);
+            return $this->handleError(__('messages.color_not_found'), [], 404);
         }
     }
 
@@ -69,19 +69,20 @@ class Color extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:255',
+            'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
             'code' => 'required|string|max:255',
 
         ]);
 
         $color = ModelsColor::find($id);
         if ($color) {
-            $color->name = $request->name;
+            $color->setTranslations('name', $request->name);
             $color->code = $request->code;
             $color->save();
             return $this->handleResponse(new ColorResource($color), 200);
         } else {
-            return $this->handleError('Color not found', [], 404);
+            return $this->handleError(__('messages.color_not_found'), [], 404);
         }
     }
 
@@ -96,9 +97,9 @@ class Color extends Controller
         $color = ModelsColor::find($id);
         if ($color) {
             $color->delete();
-            return $this->handleResponse(new ColorResource($color), 200);
+            return $this->handleResponse(null, __('messages.color_deleted'), 200);
         } else {
-            return $this->handleError('Color not found', [], 404);
+            return $this->handleError(_('messages.color_not_found'), [], 404);
         }
     }
 }

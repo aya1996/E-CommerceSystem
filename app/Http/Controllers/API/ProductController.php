@@ -80,7 +80,7 @@ class ProductController extends Controller
         $product->colors()->attach($request->colors);
         $product->sizes()->attach($request->sizes);
 
-        return $this->handleResponse(new ProductResource($product), 201);
+        return $this->handleResponse(new ProductResource($product),__('messages.product_added'), 201);
     }
 
     public function update(ProductRequest $request, $id)
@@ -120,9 +120,9 @@ class ProductController extends Controller
             $product->colors()->sync($request->colors);
             $product->sizes()->sync($request->sizes);
 
-            return $this->handleResponse(new ProductResource($product), 200);
+            return $this->handleResponse(new ProductResource($product),__('messages.product_updated'), 200);
         } else {
-            return $this->handleError('Product not found', [], 404);
+            return $this->handleError(__('messages.product_not_found'), [], 404);
         }
     }
 
@@ -133,9 +133,9 @@ class ProductController extends Controller
             $product->delete();
             File::delete(public_path('images/' . $product->feature_image));
             File::delete(public_path('images/' . $product->images));
-            return $this->handleResponse('Product deleted successfully', 200);
+            return $this->handleResponse(__('messages.product_deleted_successfully'), 200);
         } else {
-            return $this->handleError('Product not found', [], 404);
+            return $this->handleError(__('messages.product_not_found'), [], 404);
         }
     }
 
@@ -143,8 +143,12 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $products = Product::where('name', 'like', '%' . $request->keyword . '%')->get();
-        return $this->handleResponse(ProductResource::collection($products), 200);
+        if ($request->keyword) {
+            $products = Product::where('name', 'LIKE', '%' . $request->keyword . '%')->get();
+            return $this->handleResponse(ProductResource::collection($products), __('messages.product_found'), 200);
+        }
+        return $this->handleError(__('messages.product_not_found'), [], 404);
+      
     }
 }
 

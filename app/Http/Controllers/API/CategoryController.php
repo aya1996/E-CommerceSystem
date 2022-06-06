@@ -24,7 +24,7 @@ class CategoryController extends Controller
         $category->setTranslations('name', $request->name);
         $category->save();
 
-        return $this->handleResponse(new CategoryResource($category), 201);
+        return $this->handleResponse(new CategoryResource($category), __('messages.category_added'), 201);
     }
 
     public function show($id)
@@ -33,7 +33,7 @@ class CategoryController extends Controller
         if ($category) {
             return $this->handleResponse(new CategoryResource($category), 200);
         } else {
-            return $this->handleError('Category not found', [], 404);
+            return $this->handleError(__('messages.category_not_found'), [], 404);
         }
     }
 
@@ -48,9 +48,9 @@ class CategoryController extends Controller
         if ($category) {
             $category->name = $request->name;
             $category->save();
-            return $this->handleResponse(new CategoryResource($category), 200);
+            return $this->handleResponse(new CategoryResource($category),__('messages.category_updated'), 200);
         } else {
-            return $this->handleError('Category not found', [], 404);
+            return $this->handleError(__('messages.category_not_found'), 404);
         }
     }
 
@@ -59,9 +59,9 @@ class CategoryController extends Controller
         $category = Category::find($id);
         if ($category) {
             $category->delete();
-            return $this->handleResponse(new CategoryResource($category), 200);
+            return $this->handleResponse(null, __('messages.category_deleted'), 200);
         } else {
-            return $this->handleError('Category not found', [], 404);
+            return $this->handleError(__('messages.category_not_found'), [], 404);
         }
     }
 }

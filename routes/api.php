@@ -21,21 +21,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/{id}', [ProductController::class, 'show']);
-Route::post('/product', [ProductController::class, 'store']);
-Route::put('/products/{id}', [ProductController::class, 'update']);
-Route::delete('/products/{id}', [ProductController::class, 'destroy']);
-Route::get('/filterbycategory/{id}', [ProductController::class, 'filterByCategory']);
-Route::get('/filterbysize/{id}', [ProductController::class, 'filterBySize']);
-Route::get('/filterbycolor/{id}', [ProductController::class, 'filterByColor']);
-Route::get('/search', [ProductController::class, 'filterByPrice']);
+Route::get('/products', [ProductController::class, 'index'])->middleware('localization');
+Route::get('/products/{id}', [ProductController::class, 'show'])->middleware('localization');
+Route::post('/product', [ProductController::class, 'store'])->middleware('localization');
+Route::put('/products/{id}', [ProductController::class, 'update'])->middleware('localization');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->middleware('localization');
+
+Route::get('/search', [ProductController::class, 'filterByPrice'])->middleware('localization');
 
 
 
 
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/{id}', [CategoryController::class, 'show']);
-Route::post('/categories', [CategoryController::class, 'store']);
-Route::put('/categories/{id}', [CategoryController::class, 'update']);
-Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+Route::get('/categories', [CategoryController::class, 'index'])->middleware('localization');
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->middleware('localization');
+Route::post('/categories', [CategoryController::class, 'store'])->middleware('localization');
+Route::put('/categories/{id}', [CategoryController::class, 'update'])->middleware('localization');
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->middleware('localization');

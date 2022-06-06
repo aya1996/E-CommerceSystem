@@ -43,7 +43,7 @@ class Size extends Controller
 
         $size->save();
 
-        return $this->handleResponse(new SizeResource($size), 201);
+        return $this->handleResponse(new SizeResource($size) . __('messages.size_added'), 201);
     }
 
     /**
@@ -58,7 +58,7 @@ class Size extends Controller
         if ($size) {
             return $this->handleResponse(new SizeResource($size), 200);
         } else {
-            return $this->handleError('Size not found', [], 404);
+            return $this->handleError(__('messages.size_not_found'), [], 404);
         }
     }
 
@@ -79,12 +79,12 @@ class Size extends Controller
 
         $size = ModelsSize::find($id);
         if ($size) {
-            $size->name = $request->name;
-            $size->code = $request->code;
+            $size->setTranslations('name', $request->name);
+
             $size->save();
-            return $this->handleResponse(new SizeResource($size), 200);
+            return $this->handleResponse(new SizeResource($size),__('messages.size_updated'), 200);
         } else {
-            return $this->handleError('Size not found', [], 404);
+            return $this->handleError(__('messages.size_not_found'), [], 404);
         }
     }
 
@@ -100,9 +100,9 @@ class Size extends Controller
         $size = ModelsSize::find($id);
         if ($size) {
             $size->delete();
-            return $this->handleResponse(new SizeResource($size), 200);
+            return $this->handleResponse(__('messages.size_deleted'), 200);
         } else {
-            return $this->handleError('Size not found', [], 404);
+            return $this->handleError(__('messages.size_not_found'), [], 404);
         }
     }
 }
