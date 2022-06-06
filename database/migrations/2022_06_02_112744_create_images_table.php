@@ -18,8 +18,8 @@ return new class extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('path')->nullable();
-            $table->unsignedBigInteger('product_id')->onDelete('cascade')->nullable();
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

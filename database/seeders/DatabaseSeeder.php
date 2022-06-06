@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Color::factory(10)->create();
         \App\Models\Size::factory(10)->create();
         \App\Models\Image::factory(10)->create();
+        \App\Models\Tax::factory(5)->create();
         // \App\Models\ProductCategory::factory(10)->create();
 
         // \App\Models\User::factory()->create([

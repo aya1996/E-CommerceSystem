@@ -22,5 +22,16 @@ return
         'size_deleted' => 'تم حذف المقاس بنجاح',
         'product_added_to_cart' => 'تم إضافة المنتج إلى السلة بنجاح',
         'product_removed_from_cart' => 'تم إزالة المنتج من السلة بنجاح',
+        'total_price' => 'السعر الإجمالي',
+        'tax_not_found' => 'الضريبة غير موجودة',
+        'tax_deleted' => 'تم حذف الضريبة بنجاح',
+        'transaction_created' => 'تم إنشاء المعاملة بنجاح',
+        'transaction_not_found' => 'المعاملة غير موجودة',
+        'transaction_updated' => 'تم تحديث المعاملة بنجاح',
+        'transaction_deleted' => 'تم حذف المعاملة بنجاح',
+        'invoice_deleted' => 'تم حذف الفاتورة بنجاح',
+        'invoice_not_found' => 'الفاتورة غير موجودة',
+        'invoice_updated' => 'تم تحديث الفاتورة بنجاح',
+        'order_deleted' => 'تم حذف الطلب بنجاح',
 
     ];
