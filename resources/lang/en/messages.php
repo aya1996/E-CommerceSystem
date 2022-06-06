@@ -20,5 +20,7 @@ return
     'size_not_found' => 'Size not found',
     'size_updated' => 'Size updated successfully',
     'size_deleted' => 'Size deleted successfully',
+    'product_added_to_cart' => 'Product added to cart successfully',
+    'product_removed_from_cart' => 'Product removed from cart successfully',
 
 ];

@@ -28,6 +28,9 @@ Route::put('/products/{id}', [ProductController::class, 'update'])->middleware('
 Route::delete('/products/{id}', [ProductController::class, 'destroy'])->middleware('localization');
 
 Route::get('/search', [ProductController::class, 'filterByPrice'])->middleware('localization');
+Route::post('/add-to-cart/{id}', [ProductController::class, 'addToCart'])->middleware('localization');
+Route::delete('/remove-from-cart/{id}', [ProductController::class, 'removeFromCart'])->middleware('localization');
+Route::get('/cart', [ProductController::class, 'getCart'])->middleware('localization');
 
 
 

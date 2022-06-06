@@ -20,5 +20,7 @@ return
         'size_not_found' => 'المقاس غير موجود',
         'size_updated' => 'تم تحديث المقاس بنجاح',
         'size_deleted' => 'تم حذف المقاس بنجاح',
+        'product_added_to_cart' => 'تم إضافة المنتج إلى السلة بنجاح',
+        'product_removed_from_cart' => 'تم إزالة المنتج من السلة بنجاح',
 
     ];

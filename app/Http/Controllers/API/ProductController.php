@@ -80,7 +80,7 @@ class ProductController extends Controller
         $product->colors()->attach($request->colors);
         $product->sizes()->attach($request->sizes);
 
-        return $this->handleResponse(new ProductResource($product),__('messages.product_added'), 201);
+        return $this->handleResponse(new ProductResource($product), __('messages.product_added'), 201);
     }
 
     public function update(ProductRequest $request, $id)
@@ -120,7 +120,7 @@ class ProductController extends Controller
             $product->colors()->sync($request->colors);
             $product->sizes()->sync($request->sizes);
 
-            return $this->handleResponse(new ProductResource($product),__('messages.product_updated'), 200);
+            return $this->handleResponse(new ProductResource($product), __('messages.product_updated'), 200);
         } else {
             return $this->handleError(__('messages.product_not_found'), [], 404);
         }
@@ -148,9 +148,66 @@ class ProductController extends Controller
             return $this->handleResponse(ProductResource::collection($products), __('messages.product_found'), 200);
         }
         return $this->handleError(__('messages.product_not_found'), [], 404);
-      
+    }
+    public function addToCart($id)
+    {
+        $product = Product::find($id);
+        if ($product) {
+            $cart = session()->get('cart');
+            if (!$cart) {
+                $cart = [
+                    $id => [
+                        "name" => $product->name,
+                        "quantity" => 1,
+                        "price" => $product->price,
+                        "image" => $product->feature_image
+                    ]
+                ];
+                session()->put('cart', $cart);
+                return $this->handleResponse($cart, __('messages.product_added_to_cart'), 200);
+            }
+            if (isset($cart[$id])) {
+                $cart[$id]['quantity']++;
+                session()->put('cart', $cart);
+                return $this->handleResponse($cart, __('messages.product_added_to_cart'), 200);
+            } else {
+                $cart[$id] = [
+                    "name" => $product->name,
+                    "quantity" => 1,
+                    "price" => $product->price,
+                    "image" => $product->feature_image
+                ];
+                session()->put('cart', $cart);
+                return $this->handleResponse($cart, __('messages.product_added_to_cart'), 200);
+            }
+        } else {
+            return $this->handleError(__('messages.product_not_found'), [], 404);
+        }
+    }
+
+    public function getCart()
+    {
+        if (session()->has('cart')) {
+            $cart = session()->get('cart');
+            return $this->handleResponse($cart, __('messages.product_found'), 200);
+        }
+        return $this->handleError(__('messages.product_not_found'), [], 404);
+    }
+
+    public function removeFromCart($id)
+    {
+        if (session()->has('cart')) {
+            $cart = session()->get('cart');
+            if (isset($cart[$id])) {
+                unset($cart[$id]);
+                session()->put('cart', $cart);
+                return $this->handleResponse($cart, __('messages.product_removed_from_cart'), 200);
+            }
+        }
+        return $this->handleError(__('messages.product_not_found'), [], 404);
     }
 }
+
 
 
 /*
