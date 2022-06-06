@@ -29,13 +29,14 @@ class Color extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:255',
+            'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
             'code' => 'required|string|max:255',
 
         ]);
 
         $color = new Color();
-        $color->name = $request->name;
+        $color->setTranslations('name', $request->name);
         $color->code = $request->code;
         $color->save();
 

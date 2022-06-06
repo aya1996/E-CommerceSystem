@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -15,15 +16,12 @@ class CategoryController extends Controller
         //return category::all();
     }
 
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
 
-        ]);
 
         $category = new Category();
-        $category->name = $request->name;
+        $category->setTranslations('name', $request->name);
         $category->save();
 
         return $this->handleResponse(new CategoryResource($category), 201);

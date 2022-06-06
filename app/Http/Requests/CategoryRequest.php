@@ -24,7 +24,8 @@ class CategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
 
         ];
     }

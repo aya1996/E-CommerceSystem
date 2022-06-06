@@ -1,0 +1,15 @@
+
+
+{
+    "name": "الاسم",
+    "price": "السعر",
+    "description": "الوصف",
+    "feature_image": "الصورة الرئيسية",
+    "category": "القسم",
+    "color": "اللون",
+    "size": "المقاس",
+    "quantity": "الكمية",
+    "code": "الكود"
+
+    
+}

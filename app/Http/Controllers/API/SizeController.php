@@ -31,14 +31,16 @@ class Size extends Controller
     {
 
         $this->validate($request, [
-            'name' => 'required|string|max:255',
+            'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+
 
 
         ]);
 
         $size = new Size();
-        $size->name = $request->name;
-        $size->code = $request->code;
+        $size->setTranslations('name', $request->name);
+
         $size->save();
 
         return $this->handleResponse(new SizeResource($size), 201);

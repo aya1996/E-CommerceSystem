@@ -1,0 +1,11 @@
+{
+    "name": "name",
+    "description": "description",
+    "price": "price",
+    "feature_image": "image",
+    "category": "category",
+    "color": "color",
+    "size": "size",
+    "quantity": "quantity",
+    "code": "code"
+}

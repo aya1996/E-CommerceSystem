@@ -16,7 +16,7 @@ class CategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => $this->getTranslations('name', ['en', 'ar']),
             'products' => $this->products()->get(),
         ];
     }

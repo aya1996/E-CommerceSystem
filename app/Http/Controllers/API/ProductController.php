@@ -47,10 +47,17 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
+        // return $request->all();
+        // return $request->name['ar'];
         $product = new Product();
-        $product->name = $request->name;
+        $product->setTranslations('name', $request->name);
+        // $product->setTranslations('name', $request->name['ar']);
+
+        // return $product;
+
         $product->price = $request->price;
-        $product->description = $request->description;
+        $product->setTranslations('description', $request->description);
+        // $product->description->setTranslations('ar', $request->description);
 
         if ($request->hasfile('feature_image')) {
             $name = $this->saveImage($request->file('feature_image'));
@@ -140,3 +147,14 @@ class ProductController extends Controller
         return $this->handleResponse(ProductResource::collection($products), 200);
     }
 }
+
+
+/*
+         $product = Product::create([
+            'name'  => [
+                'en' => $request->name,
+                'ar' => $request->name,
+            
+            ]
+        ]);
+ */

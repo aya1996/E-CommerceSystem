@@ -24,9 +24,10 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
             'price' => 'required|numeric',
-            'description' => 'required|string',
+            'description' => 'required|array',
             'feature_image' => 'required|image',
             'categories' => 'required|array|min:1max:5|exists:categories,id',
             'colors' => 'required|array|min:1max:5|exists:colors,id',
