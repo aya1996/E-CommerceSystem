@@ -30,6 +30,7 @@ class OrderRequest extends FormRequest
             'user_id' => 'required|exists:users,id',
             'shipping_date' => 'required|date',
             'delivery_date' => 'required|date',
+            
             'status' => 'required|string',
            
 

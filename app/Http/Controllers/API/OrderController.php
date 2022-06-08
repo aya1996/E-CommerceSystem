@@ -35,17 +35,31 @@ class OrderController extends Controller
             'delivery_date' => $request->delivery_date,
             'status' => $request->status,
         ]);
-      
- 
-        $quantity =0;
-        if($request->products){
-            foreach($request->products as $product){
-                $quantity += $product['quantity'];
+
+
+
+
+
+        // return $quantity;
+
+        $quantity = 0;
+
+        foreach ($request->products as $product) {
+            foreach ($order->products as $orderProduct) {
+                if ($orderProduct->product_id != $product['id']) {
+                    $quantity = 1;
+                } else {
+
+                    $quantity++;
+                    $order->product()->update([
+                        'quantity' => $quantity,
+                    ]);
+                }
+                // dd($quantity);
             }
         }
-        $order->products()->attach($request->products);
-      if($order->products->id)
-      
+        $order->products()->attach($request->products, ['quantity' => $quantity]);
+
 
 
         return $this->handleResponse(new OrderResource($order), 201);

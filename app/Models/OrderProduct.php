@@ -20,7 +20,4 @@ class OrderProduct extends Model
     {
         return $this->belongsToMany(Product::class);
     }
-
-
-    
 }
