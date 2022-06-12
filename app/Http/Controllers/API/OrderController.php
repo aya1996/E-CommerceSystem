@@ -64,11 +64,9 @@ class OrderController extends Controller
             if ($request->products[$i] == $request->products[$i + 1]) {
                 $quantity++;
                 $order->products()->attach($request->products[$i++], ['quantity' => $quantity]);
-            } elseif ($request->products[$i] != $request->products[$i + 1]) {
-
-                $order->products()->attach($request->products[$i], ['quantity' => $quantity]);
             } else {
                 $order->products()->attach($request->products[$i], ['quantity' => $quantity]);
+                $quantity = 1;
             }
         }
 
