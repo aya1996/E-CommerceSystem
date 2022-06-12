@@ -35,8 +35,10 @@ class InvoiceController extends Controller
 
         $products = Product::whereIn('id', $request['products'])->get();
         $total = $products->sum->price;
-        $taxes = Tax::where('id', $request['tax_id'])->get();
-        $totalTax = $taxes->sum->rate * $total / 100;
+
+        $taxes = Tax::whereIn('id', $request['taxes'])->get();
+        $totalTax = $taxes->sum->rate * ($total / 100);
+        $discount = 0;
 
         if ($products->count() >= 5) {
             $discount = ($total * 10) / 100;
@@ -46,17 +48,20 @@ class InvoiceController extends Controller
         }
 
         $invoice = Invoice::create([
-            'invoice_number' => $request->invoice_number,
+            'invoice_number' => uniqid(),
             'total_amount' => $total,
-            'tax_id' => $request->tax_id,
             'user_id' => $request->user_id,
             'sub_total' => $sub_total,
-            'discount' => $request->discount,
-            'status' => $request->status,
+            'discount' =>  $discount,
+            'status'  => [
+                'en' => $request->status,
+                'ar' => $request->status,
+            
+            ],
             'invoiceDate' => $request->invoiceDate,
 
         ]);
-        $invoice = Invoice::create($request->all());
+
         $invoice->products()->attach($request->products);
         $invoice->taxes()->attach($request->taxes);
 
@@ -86,8 +91,18 @@ class InvoiceController extends Controller
     public function update(InvoiceRequest $request, $id)
     {
         $invoice = Invoice::findOrFail($id);
-        $invoice->update($request->all());
-        return $this->handleResponse($invoice, __('messages.invoice_updated'), 200);
+        $invoice->update(
+            [
+                'user_id' => $request->user_id,
+                'invoiceDate' => $request->invoiceDate,
+                'status' =>  $request->status,
+            ]
+        );
+
+        $invoice->products()->sync($request->products);
+        $invoice->taxes()->sync($request->taxes);
+
+        return $this->handleResponse(new InvoiceResource($invoice), 200);
     }
 
     /**

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_number')->uniqid();
             $table->integer('total_amount');
-            $table->unsignedBigInteger('tax_id');
             $table->unsignedBigInteger('user_id');
             $table->integer('sub_total');
             $table->integer('discount');
@@ -25,7 +24,6 @@ return new class extends Migration
             $table->date('invoiceDate');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('tax_id')->references('id')->on('taxes')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

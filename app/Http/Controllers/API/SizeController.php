@@ -7,7 +7,7 @@ use App\Http\Resources\SizeResource;
 use App\Models\Size as ModelsSize;
 use Illuminate\Http\Request;
 
-class Size extends Controller
+class SizeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -38,12 +38,12 @@ class Size extends Controller
 
         ]);
 
-        $size = new Size();
+        $size = new ModelsSize();
         $size->setTranslations('name', $request->name);
 
         $size->save();
 
-        return $this->handleResponse(new SizeResource($size) . __('messages.size_added'), 201);
+        return $this->handleResponse(new SizeResource($size), __('messages.size_added'), 201);
     }
 
     /**
@@ -73,7 +73,8 @@ class Size extends Controller
     {
 
         $this->validate($request, [
-            'name' => 'required|string|max:255',
+            'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
 
         ]);
 
@@ -82,7 +83,7 @@ class Size extends Controller
             $size->setTranslations('name', $request->name);
 
             $size->save();
-            return $this->handleResponse(new SizeResource($size),__('messages.size_updated'), 200);
+            return $this->handleResponse(new SizeResource($size), __('messages.size_updated'), 200);
         } else {
             return $this->handleError(__('messages.size_not_found'), [], 404);
         }

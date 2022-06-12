@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('transaction__id')->unique();
             $table->string('payment_method');
             $table->string('payment_status');
-            $table->string('payment_amount');
+            $table->float('payment_amount');
             $table->string('payment_currency');
             $table->date('payment_date');
 

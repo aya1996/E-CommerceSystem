@@ -30,9 +30,9 @@ class OrderRequest extends FormRequest
             'user_id' => 'required|exists:users,id',
             'shipping_date' => 'required|date',
             'delivery_date' => 'required|date',
-            
-            'status' => 'required|string',
-           
+            'status.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'status.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+
 
         ];
     }

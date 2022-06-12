@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -27,42 +28,61 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $order = Order::create([
             'user_id' => $request->user_id,
             'shipping_date' => $request->shipping_date,
             'delivery_date' => $request->delivery_date,
-            'status' => $request->status,
+            'status'  => [
+                'en' => $request->status,
+                'ar' => $request->status,
+
+            ],
         ]);
-
-
-
-
 
         // return $quantity;
 
-        $quantity = 0;
 
-        foreach ($request->products as $product) {
-            foreach ($order->products as $orderProduct) {
-                if ($orderProduct->product_id != $product['id']) {
-                    $quantity = 1;
-                } else {
+        // $quantity = 1;
+        // $order->products()->attach($request->products, ['quantity' => $quantity]);
 
-                    $quantity++;
-                    $order->product()->update([
-                        'quantity' => $quantity,
-                    ]);
-                }
-                // dd($quantity);
+
+
+        // foreach ($order->products as $product) {
+        //     //return $product;
+        //     if ($product->pivot->product_id == $product->pivot->product_id + 1) {
+        //         $product->pivot->quantity = $product->pivot->quantity + 1;
+        //         $product->pivot->save();
+        //     }
+        // }
+
+        $quantity = 1;
+        for ($i = 0; $i < count($request->products) - 1; $i++) {
+            //  return count($request->products) - 1;
+
+            if ($request->products[$i] == $request->products[$i + 1]) {
+                $quantity++;
+                $order->products()->attach($request->products[$i++], ['quantity' => $quantity]);
+            } elseif ($request->products[$i] != $request->products[$i + 1]) {
+
+                $order->products()->attach($request->products[$i], ['quantity' => $quantity]);
+            } else {
+                $order->products()->attach($request->products[$i], ['quantity' => $quantity]);
             }
         }
-        $order->products()->attach($request->products, ['quantity' => $quantity]);
+
+        // foreach ($order->products as $product) {
+        //     if ($product->pivot->product_id == $product->pivot->product_id + 1) {
+        //         $product->pivot->quantity = $product->pivot->quantity + 1;
+        //         $product->pivot->save();
+        //     }
+        // }
+        // $order->products()->attach($request->products);
 
 
 
-        return $this->handleResponse(new OrderResource($order), 201);
+        return $this->handleResponse(new OrderResource($order), __('messages.order_created'), 201);
     }
 
     /**
@@ -88,9 +108,26 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        $order->update($request->all());
+        $order->update([
+            'user_id' => $request->user_id,
+            'shipping_date' => $request->shipping_date,
+            'delivery_date' => $request->delivery_date,
+            'status'  => [
+                'en' => $request->status,
+                'ar' => $request->status,
+
+            ],
+        ]);
+
         $order->products()->sync($request->products);
-        return $this->handleResponse(new OrderResource($order), 200);
+        foreach ($order->products as $product) {
+            if ($product->pivot->product_id == $product->pivot->product_id + 1) {
+                $product->pivot->quantity = $product->pivot->quantity + 1;
+                $product->pivot->save();
+            }
+        }
+
+        return $this->handleResponse(new OrderResource($order), __('messages.order_updated'));
     }
 
     /**

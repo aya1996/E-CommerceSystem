@@ -26,13 +26,14 @@ class ProductRequest extends FormRequest
         return [
             'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
             'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
-            'price' => 'required|numeric',
-            'description' => 'required|array',
-            'feature_image' => 'required|image',
+            'price' => 'required|integer',
+            'description.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'description.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+            'feature_image' => 'required|image ',
             'categories' => 'required|array|min:1max:5|exists:categories,id',
             'colors' => 'required|array|min:1max:5|exists:colors,id',
             'sizes' => 'required|array|min:1max:5|exists:sizes,id',
-            'images' => 'required',
+            // 'images' => 'required',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }

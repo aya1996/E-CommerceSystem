@@ -28,11 +28,21 @@ class TaxController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
-            'rate' => 'required',
+            'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+            'rate' => 'required | numeric',
 
         ]);
-        $tax = Tax::create($request->all());
+        $tax = Tax::create(
+            [
+                'name'  => [
+                    'en' => $request->name,
+                    'ar' => $request->name,
+
+                ],
+                'rate' => $request->rate,
+            ]
+        );
 
         return $this->handleResponse($tax, 201);
     }
@@ -65,8 +75,9 @@ class TaxController extends Controller
     public function update(Request $request, tax $tax)
     {
         $this->validate($request, [
-            'name' => 'required',
-            'rate' => 'required',
+            'name.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'name.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+            'rate' => 'required | numeric',
 
         ]);
         $tax->update($request->all());

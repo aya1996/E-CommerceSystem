@@ -25,10 +25,14 @@ class TransactionRequest extends FormRequest
     {
         return [
             'user_id' => 'required|exists:users,id',
-            'payment_method' => 'required|string',
-            'payment_status' => 'required|string',
-            'payment_amount' => 'required|string',
-            'payment_currency' => 'required|string',
+            'transaction_id' => 'unique:transactions,transaction_id',
+            'payment_method.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'payment_method.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+            'payment_status.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'payment_status.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+            'payment_currency.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'payment_currency.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+            'payment_amount' => 'exists:invoices,sub_total',
             'payment_date' => 'required|date',
 
         ];

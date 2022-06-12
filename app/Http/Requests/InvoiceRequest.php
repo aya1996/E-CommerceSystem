@@ -27,9 +27,11 @@ class InvoiceRequest extends FormRequest
             'products' => 'required|array',
             'products.*' => 'required|exists:products,id',
             'taxes' => 'required|array',
+            'invoice_number' => 'unique:invoices,invoice_number',
             'taxes.*' => 'required|exists:taxes,id',
             'user_id' => 'required|exists:users,id',
-            'status' => 'required|string',
+            'status.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
+            'status.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
             'invoiceDate' => 'required|date',
         ];
     }

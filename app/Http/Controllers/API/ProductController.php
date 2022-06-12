@@ -89,9 +89,9 @@ class ProductController extends Controller
 
         $product = Product::find($id);
         if ($product) {
-            $product->name = $request->name;
+            $product->setTranslations('name', $request->name);
             $product->price = $request->price;
-            $product->description = $request->description;
+            $product->setTranslations('description', $request->description);
 
             $product->save();
 
@@ -231,4 +231,3 @@ class ProductController extends Controller
             ]
         ]);
  */
-

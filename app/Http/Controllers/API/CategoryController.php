@@ -37,12 +37,9 @@ class CategoryController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-
-        ]);
+      
 
         $category = Category::find($id);
         if ($category) {

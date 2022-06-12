@@ -7,7 +7,7 @@ use App\Http\Resources\ColorResource;
 use App\Models\Color as ModelsColor;
 use Illuminate\Http\Request;
 
-class Color extends Controller
+class ColorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class Color extends Controller
 
         ]);
 
-        $color = new Color();
+        $color = new ModelsColor();
         $color->setTranslations('name', $request->name);
         $color->code = $request->code;
         $color->save();
