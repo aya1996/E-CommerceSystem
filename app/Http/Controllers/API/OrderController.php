@@ -34,11 +34,8 @@ class OrderController extends Controller
             'user_id' => $request->user_id,
             'shipping_date' => $request->shipping_date,
             'delivery_date' => $request->delivery_date,
-            'status'  => [
-                'en' => $request->status,
-                'ar' => $request->status,
 
-            ],
+
         ]);
 
         // return $quantity;
@@ -57,18 +54,19 @@ class OrderController extends Controller
         //     }
         // }
 
-        $quantity = 1;
-        for ($i = 0; $i < count($request->products) - 1; $i++) {
-            //  return count($request->products) - 1;
+        // $quantity = 1;
+        // $product_count = count($request->products);
+        // for ($i = 1; $i < $product_count; $i++) {
+        //     //return count($request->products);
 
-            if ($request->products[$i] == $request->products[$i + 1]) {
-                $quantity++;
-                $order->products()->attach($request->products[$i++], ['quantity' => $quantity]);
-            } else {
-                $order->products()->attach($request->products[$i], ['quantity' => $quantity]);
-                $quantity = 1;
-            }
-        }
+        //     if ($request->products[$i] != $request->products[$i + 1]) {
+        //         $quantity++;
+        //         $order->products()->attach($request->products[$i], ['quantity' => $quantity]);
+        //     } else {
+        //         $order->products()->attach($request->products[$i++], ['quantity' => $quantity]);
+        //         $quantity = 1;
+        //     }
+        // }
 
         // foreach ($order->products as $product) {
         //     if ($product->pivot->product_id == $product->pivot->product_id + 1) {
@@ -78,7 +76,10 @@ class OrderController extends Controller
         // }
         // $order->products()->attach($request->products);
 
+        foreach (array_count_values($request->products) as $product_id => $count) {
 
+            $order->products()->attach($product_id, ['quantity' => $count]);
+        }
 
         return $this->handleResponse(new OrderResource($order), __('messages.order_created'), 201);
     }
@@ -110,11 +111,7 @@ class OrderController extends Controller
             'user_id' => $request->user_id,
             'shipping_date' => $request->shipping_date,
             'delivery_date' => $request->delivery_date,
-            'status'  => [
-                'en' => $request->status,
-                'ar' => $request->status,
-
-            ],
+            'status'  => $request->status,
         ]);
 
         $order->products()->sync($request->products);

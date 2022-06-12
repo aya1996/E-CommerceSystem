@@ -25,13 +25,12 @@ class OrderRequest extends FormRequest
     {
         return [
 
-            'products' => 'required|array',
+            'products' => 'required|array | min:1 | max:10',
             'products.*' => 'required|exists:products,id',
             'user_id' => 'required|exists:users,id',
             'shipping_date' => 'required|date',
             'delivery_date' => 'required|date',
-            'status.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
-            'status.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+
 
 
         ];

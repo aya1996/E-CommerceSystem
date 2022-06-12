@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->integer('sub_total');
             $table->integer('discount');
-            $table->text('status');
+            $table->integer('status')->default(0);
             $table->date('invoiceDate');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');

@@ -19,16 +19,13 @@ class OrderFactory extends Factory
     {
         return [
 
-      
+
             'user_id' => $this->faker->numberBetween(1, 10),
             'shipping_date' => $this->faker->dateTimeBetween('2020-01-01', '2020-12-31'),
             'delivery_date' => $this->faker->dateTimeBetween('2020-01-01', '2020-12-31'),
-            'status' => [
-                'en' => $this->faker->word,
-                'ar' => $this->faker->word,
-            ],
+            'status' => $this->faker->numberBetween(0, 1),
 
-           
+
         ];
     }
 }

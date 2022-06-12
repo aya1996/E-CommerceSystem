@@ -24,7 +24,7 @@ class InvoiceFactory extends Factory
             'sub_total' => $this->faker->numberBetween(1, 100),
             'invoiceDate' => $this->faker->dateTimeBetween('2020-01-01', '2020-12-31'),
             'discount' => $this->faker->numberBetween(1, 100),
-            'status' => $this->faker->word,
+            'status' => $this->faker->numberBetween(0, 1),
 
 
         ];

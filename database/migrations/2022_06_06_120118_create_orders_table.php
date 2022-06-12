@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->date('shipping_date');
             $table->date('delivery_date');
-            $table->string('status');
+            $table->integer('status')->default(0);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
 
             $table->timestamps();

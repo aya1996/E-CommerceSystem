@@ -34,24 +34,10 @@ class TransactionsController extends Controller
         $transaction = Transaction::create([
             'user_id' => $request->user_id,
             'transaction_id' => uniqid(),
-            'payment_method'  => [
-                'en' => $request->payment_method,
-                'ar' => $request->payment_method,
-
-            ],
-            'payment_status'  => [
-                'en' => $request->payment_status,
-                'ar' => $request->payment_status,
-
-            ],
-
+            'payment_method' => $request->payment_method,
+            'payment_status' => $request->payment_status,
             'payment_amount' => Invoice::find($request->user_id)->sub_total,
-
-            'payment_currency'  => [
-                'en' => $request->payment_currency,
-                'ar' => $request->payment_currency,
-
-            ],
+            'payment_currency' => $request->payment_currency,
             'payment_date' => $request->payment_date,
 
         ]);
@@ -92,25 +78,11 @@ class TransactionsController extends Controller
 
         $transaction->update([
             'user_id' => $request->user_id,
-
-            'payment_method'  => [
-                'en' => $request->payment_method,
-                'ar' => $request->payment_method,
-
-            ],
-            'payment_status'  => [
-                'en' => $request->payment_status,
-                'ar' => $request->payment_status,
-
-            ],
-
+            'transaction_id' => uniqid(),
+            'payment_method' => $request->payment_method,
+            'payment_status' => $request->payment_status,
             'payment_amount' => Invoice::find($request->user_id)->sub_total,
-
-            'payment_currency'  => [
-                'en' => $request->payment_currency,
-                'ar' => $request->payment_currency,
-
-            ],
+            'payment_currency' => $request->payment_currency,
             'payment_date' => $request->payment_date,
 
         ]);
