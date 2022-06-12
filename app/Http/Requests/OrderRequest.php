@@ -27,7 +27,7 @@ class OrderRequest extends FormRequest
 
             'products' => 'required|array | min:1 | max:10',
             'products.*' => 'required|exists:products,id',
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'exists:users,id',
             'shipping_date' => 'required|date',
             'delivery_date' => 'required|date',
 

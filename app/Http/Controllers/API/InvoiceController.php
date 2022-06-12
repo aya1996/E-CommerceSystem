@@ -50,14 +50,9 @@ class InvoiceController extends Controller
         $invoice = Invoice::create([
             'invoice_number' => uniqid(),
             'total_amount' => $total,
-            'user_id' => $request->user_id,
+            'user_id' => auth()->user()->id,
             'sub_total' => $sub_total,
             'discount' =>  $discount,
-            'status'  => [
-                'en' => $request->status,
-                'ar' => $request->status,
-            
-            ],
             'invoiceDate' => $request->invoiceDate,
 
         ]);
@@ -93,7 +88,7 @@ class InvoiceController extends Controller
         $invoice = Invoice::findOrFail($id);
         $invoice->update(
             [
-                'user_id' => $request->user_id,
+                'user_id' => auth()->user()->id,
                 'invoiceDate' => $request->invoiceDate,
                 'status' =>  $request->status,
             ]

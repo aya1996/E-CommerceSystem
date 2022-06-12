@@ -32,7 +32,7 @@ class TransactionsController extends Controller
     {
 
         $transaction = Transaction::create([
-            'user_id' => $request->user_id,
+            'user_id' => auth()->user()->id,
             'transaction_id' => uniqid(),
             'payment_method' => $request->payment_method,
             'payment_status' => $request->payment_status,
@@ -77,7 +77,7 @@ class TransactionsController extends Controller
             return $this->handleResponse(null, __('messages.transaction_not_found'), 404);
 
         $transaction->update([
-            'user_id' => $request->user_id,
+            'user_id' => auth()->user()->id,
             'transaction_id' => uniqid(),
             'payment_method' => $request->payment_method,
             'payment_status' => $request->payment_status,

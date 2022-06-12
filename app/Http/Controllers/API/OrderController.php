@@ -31,7 +31,7 @@ class OrderController extends Controller
     public function store(OrderRequest $request)
     {
         $order = Order::create([
-            'user_id' => $request->user_id,
+            'user_id' => auth()->user()->id,
             'shipping_date' => $request->shipping_date,
             'delivery_date' => $request->delivery_date,
 
@@ -108,7 +108,7 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
         $order->update([
-            'user_id' => $request->user_id,
+            'user_id' => auth()->user()->id,
             'shipping_date' => $request->shipping_date,
             'delivery_date' => $request->delivery_date,
             'status'  => $request->status,
