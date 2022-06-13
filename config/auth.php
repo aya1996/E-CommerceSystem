@@ -40,8 +40,8 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'admin-api' => [
-            'driver' => 'passport',
+        'admin' => [
+            'driver' => 'session',
             'provider' => 'admins',
         ],
         'api' => [

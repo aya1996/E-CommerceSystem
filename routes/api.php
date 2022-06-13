@@ -12,6 +12,14 @@ use App\Http\Controllers\API\TransactionsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\API\Admin\{
+    Auth\LoginController as AdminLoginController
+};
+
+use App\Http\Controllers\API\User\{
+    Auth\LoginController as UserLoginController,
+};
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -91,3 +99,25 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/taxes/{id}', [TaxController::class, 'update'])->middleware('localization');
     Route::delete('/taxes/{id}', [TaxController::class, 'destroy'])->middleware('localization');
 });
+
+
+
+    Route::prefix('admin')->group(function () {
+
+        
+        Route::group(['prefix' => 'auth'], function() {
+            Route::post('login', [AdminLoginController::class, 'login']);
+        });
+   
+            
+    });
+
+    Route::prefix('user')->group(function () {
+
+        
+        Route::group(['prefix' => 'auth'], function() {
+            Route::post('login', [UserLoginController::class, 'login']);
+        });
+   
+            
+    });
