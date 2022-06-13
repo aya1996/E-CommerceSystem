@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\API\AuthController;
+
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\InvoiceController;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Admin\{
     Auth\LoginController as AdminLoginController
 };
-
+use App\Http\Controllers\API\Admin\Roles\RoleController;
 use App\Http\Controllers\API\User\{
     Auth\LoginController as UserLoginController,
 };
@@ -31,13 +31,32 @@ use App\Http\Controllers\API\User\{
 |
 */
 
-Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'register']);
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::prefix('admin')->group(function () {
+
+
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('login', [AdminLoginController::class, 'login']);
+        Route::post('register', [AdminLoginController::class, 'register']);
+        Route::post('logout', [AdminLoginController::class, 'logout']);
+    });
+
+    Route::group(['prefix' => 'roles'], function () {
+        Route::post('create-role', [RoleController::class, 'store']);
+    });
+});
+
+Route::prefix('user')->group(function () {
+
+
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('login', [UserLoginController::class, 'login']);
+        Route::post('register', [UserLoginController::class, 'register']);
+        Route::post('logout', [UserLoginController::class, 'logout']);
+    });
+});
+
+Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
     Route::get('/products', [ProductController::class, 'index'])->middleware('localization');
@@ -99,25 +118,3 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/taxes/{id}', [TaxController::class, 'update'])->middleware('localization');
     Route::delete('/taxes/{id}', [TaxController::class, 'destroy'])->middleware('localization');
 });
-
-
-
-    Route::prefix('admin')->group(function () {
-
-        
-        Route::group(['prefix' => 'auth'], function() {
-            Route::post('login', [AdminLoginController::class, 'login']);
-        });
-   
-            
-    });
-
-    Route::prefix('user')->group(function () {
-
-        
-        Route::group(['prefix' => 'auth'], function() {
-            Route::post('login', [UserLoginController::class, 'login']);
-        });
-   
-            
-    });

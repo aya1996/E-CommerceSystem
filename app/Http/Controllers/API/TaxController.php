@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class TaxController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view-tax|create-tax|edit-tax|delete-tax', ['only' => ['index', 'store']]);
+        $this->middleware('permission:create-tax', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-tax', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete-tax', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *

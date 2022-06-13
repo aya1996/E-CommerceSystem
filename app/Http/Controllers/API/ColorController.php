@@ -14,6 +14,13 @@ class ColorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('permission:view-color|create-color|edit-color|delete-color', ['only' => ['index', 'store']]);
+        $this->middleware('permission:create-color', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-color', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete-color', ['only' => ['destroy']]);
+    }
     public function index()
     {
 

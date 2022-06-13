@@ -47,6 +47,29 @@ class DatabaseSeeder extends Seeder
             'create-tax',
             'create-transaction',
             'create-order',
+            'create-user',
+            'edit-admin',
+            'edit-product',
+            'edit-category',
+            'edit-color',
+            'edit-size',
+            'edit-image',
+            'edit-tax',
+            'edit-transaction',
+            'edit-order',
+            'edit-user',
+            'delete-admin',
+            'delete-product',
+            'delete-category',
+            'delete-color',
+            'delete-size',
+            'delete-image',
+            'delete-tax',
+            'delete-transaction',
+            'delete-order',
+            'delete-user',
+
+            
         ];
 
         foreach ($permissions as $permission) {
@@ -62,6 +85,27 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $admin->assignRole($role->id);
+
+
+        $permissions = [
+            'view-invoice',
+            'create-invoice',
+            'update-invoice',
+            'delete-invoice',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
+        $role = Role::create(['name' => 'invoice']);
+
+        $accountant = Admin::create([
+            'name' => 'Accountant',
+            'email' => 'accountant@gmail.com',
+            'password' => bcrypt('123456'),
+        ]);
+
+        $accountant->assignRole($role->id);
 
 
 

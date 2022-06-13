@@ -9,6 +9,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
+
 {
 
     /**
@@ -80,6 +81,11 @@ class OrderController extends Controller
 
             $order->products()->attach($product_id, ['quantity' => $count]);
         }
+        $total = 1000;
+
+        $order->invoice()->create([
+                'total' => $total
+        ]);
 
         return $this->handleResponse(new OrderResource($order), __('messages.order_created'), 201);
     }

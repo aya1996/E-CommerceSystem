@@ -15,6 +15,15 @@ class ProductController extends Controller
 {
     use ImageTrait;
 
+
+    public function __construct()
+    {
+        $this->middleware('permission:view-product|create-product|edit-product|delete-product', ['only' => ['index', 'store']]);
+        $this->middleware('permission:create-product', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-product', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete-product', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
         $productCategory = Product::query()->when(request('category_id'), function ($query) {

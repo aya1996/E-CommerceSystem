@@ -10,6 +10,13 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view-category|create-category|edit-category|delete-category', ['only' => ['index', 'store']]);
+        $this->middleware('permission:create-category', ['only' => ['create', 'store']]);
+        $this->middleware('permission:edit-category', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete-category', ['only' => ['destroy']]);
+    }
     public function index()
     {
         return $this->handleResponse(CategoryResource::collection(Category::all()), 200);
@@ -39,13 +46,13 @@ class CategoryController extends Controller
 
     public function update(CategoryRequest $request, $id)
     {
-      
+
 
         $category = Category::find($id);
         if ($category) {
             $category->name = $request->name;
             $category->save();
-            return $this->handleResponse(new CategoryResource($category),__('messages.category_updated'), 200);
+            return $this->handleResponse(new CategoryResource($category), __('messages.category_updated'), 200);
         } else {
             return $this->handleError(__('messages.category_not_found'), 404);
         }
