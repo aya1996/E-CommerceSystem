@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+
     public function login(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if(Auth::guard('admin-api')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
             if (!Auth::attempt($request->only('email', 'password'))) {
                 return response()->json([
                     'message' => 'Invalid login details'
@@ -21,7 +22,9 @@ class AuthController extends Controller
 
             $user = User::where('email', $request['email'])->firstOrFail();
 
-            $token = $user->createToken('auth_token')->plainTextToken;
+            // $token = $user->createToken('auth_token')->plainTextToken;
+            
+            $token = auth()->guard('admin-api')->user()->createToken('authToken')->accessToken;
 
             return response()->json([
                 'access_token' => $token,
