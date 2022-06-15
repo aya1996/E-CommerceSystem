@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-   
+
 
     protected $guarded = [];
 
-    
+
 
     public function products()
     {
@@ -25,8 +25,13 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class);
+    }
+
     public function invoice()
     {
-        return $this->hasOne(Invoice::class);
+        return $this->belongsTo(Invoice::class);
     }
 }

@@ -22,8 +22,8 @@ class OrderResource extends JsonResource
             'delivery_date' => $this->delivery_date,
             'status' => $this->status,
             'products' => $this->products()->get(),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'invoice' => $this->invoice()->get(),
+
         ];
     }
 }

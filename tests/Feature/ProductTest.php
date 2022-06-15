@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Admin;
 use App\Models\Product;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +25,9 @@ class ProductTest extends TestCase
     public function test_it_can_create_a_product()
     {
         Storage::fake('local');
-        $response = $this->post('/api/product', [
+        $admin = Admin::find(1);
+        // $admin->givePermissionTo('create-product');
+        $response =  $this->actingAs($admin)->post('/api/product', [
             'name' => [
                 'en' => 'Product Name',
                 'ar' => 'اسم المنتج'
@@ -40,7 +43,7 @@ class ProductTest extends TestCase
 
 
         ]);
-        //   dd($response->json());
+        //dd($response->json());
         $response->assertStatus(200);
         // $this->assertCount(1, Product::all());
         // $this->assertDatabaseHas('products', [
@@ -62,11 +65,9 @@ class ProductTest extends TestCase
 
     public function test_it_can_update_a_product()
     {
+        $admin = Admin::find(1);
         $product = Product::factory()->create();
-
-
-
-        $response = $this->put('/api/products/' . $product->id, [
+        $response = $this->actingAs($admin)->put('/api/products/' . $product->id, [
             'name' => [
                 'en' => 'Product Name',
                 'ar' => 'اسم المنتج'
@@ -86,8 +87,8 @@ class ProductTest extends TestCase
     public function test_it_can_delete_a_product()
     {
         $product = Product::factory()->create();
-
-        $response = $this->delete('/api/products/' . $product->id);
+        $admin = Admin::find(1);
+        $response = $this->actingAs($admin)->delete('/api/products/' . $product->id);
 
         $response->assertStatus(200);
     }
@@ -95,18 +96,18 @@ class ProductTest extends TestCase
     public function test_it_can_get_a_product()
     {
         $product = Product::factory()->create();
-
-        $response = $this->get('/api/products/' . $product->id);
-
-        $response->assertStatus(200);
-    }
-
-    public function test_it_can_get_all_products()
-    {
-        // $product = Product::factory()->create();
-
-        $response = $this->get('/api/products');
+        $admin = Admin::find(1);
+        $response = $this->actingAs($admin)->get('/api/products/' . $product->id);
 
         $response->assertStatus(200);
     }
+
+    // public function test_it_can_get_all_products()
+    // {
+    //     // $product = Product::factory()->create();
+    //     $admin = Admin::find(1);
+    //     $response = $this->actingAs($admin)->get('/api/products');
+
+    //     $response->assertStatus(200);
+    // }
 }

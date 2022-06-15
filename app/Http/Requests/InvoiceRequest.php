@@ -24,14 +24,13 @@ class InvoiceRequest extends FormRequest
     public function rules()
     {
         return [
-            'products' => 'required|array',
-            'products.*' => 'required|exists:products,id',
+            // 'products' => 'required|array',
+            // 'products.*' => 'required|exists:products,id',
             'taxes' => 'required|array',
             'invoice_number' => 'unique:invoices,invoice_number',
             'taxes.*' => 'required|exists:taxes,id',
             'user_id' => 'required|exists:users,id',
-            'status.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
-            'status.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+            'status' => 'required|boolean',
             'invoiceDate' => 'required|date',
         ];
     }

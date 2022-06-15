@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Tax;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class InvoiceController extends Controller
 {
@@ -53,7 +54,7 @@ class InvoiceController extends Controller
             'user_id' => auth()->user()->id,
             'sub_total' => $sub_total,
             'discount' =>  $discount,
-            'invoiceDate' => $request->invoiceDate,
+            'invoiceDate' => Date('Y-m-d'),
 
         ]);
 
