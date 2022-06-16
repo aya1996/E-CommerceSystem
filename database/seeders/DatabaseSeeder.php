@@ -25,7 +25,10 @@ class DatabaseSeeder extends Seeder
         \App\Models\Image::factory(10)->create();
         \App\Models\Tax::factory(5)->create();
         \App\Models\Transaction::factory(5)->create();
+        \App\Models\Delivery::factory(5)->create();
         \App\Models\Order::factory(5)->create();
+
+
 
         $permissions = [
             'view-admin',
@@ -68,8 +71,15 @@ class DatabaseSeeder extends Seeder
             'delete-transaction',
             'delete-order',
             'delete-user',
+            'view-delivery',
+            'create-delivery',
+            'edit-delivery',
+            'delete-delivery',
 
-            
+
+
+
+
         ];
 
         foreach ($permissions as $permission) {

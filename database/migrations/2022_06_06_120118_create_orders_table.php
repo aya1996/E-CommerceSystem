@@ -18,8 +18,12 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->date('shipping_date');
             $table->date('delivery_date');
-            $table->integer('status')->default(0);
+            $table->string('status')->default('pending');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('delivery_id')->nullable();
+            $table->foreign('delivery_id')->references('id')->on('deliveries')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
 
             $table->timestamps();
         });

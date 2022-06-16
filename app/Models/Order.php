@@ -34,4 +34,17 @@ class Order extends Model
     {
         return $this->belongsTo(Invoice::class);
     }
+
+    public function delivery()
+    {
+        return $this->belongsTo(Delivery::class);
+    }
+
+
+    public function scopeUserLocation($query, $latitude, $longitude)
+    {
+        
+        
+    }
+    
 }

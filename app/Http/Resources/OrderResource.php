@@ -21,8 +21,20 @@ class OrderResource extends JsonResource
             'shipping_date' => $this->shipping_date,
             'delivery_date' => $this->delivery_date,
             'status' => $this->status,
-            'products' => $this->products()->get(),
-            'invoice' => $this->invoice()->get(),
+            'products' => $this->products()->get()->map(function ($product) {
+                return [
+
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'quantity' => $product->pivot->quantity,
+                ];
+            }),
+            'delivery_id' => $this->delivery_id,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+
+
+          
 
         ];
     }

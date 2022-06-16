@@ -4,16 +4,22 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
+use App\Http\Resources\InvoiceResource;
 use App\Http\Resources\OrderResource;
+use App\Models\Delivery;
 use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Tax;
+use App\Traits\InvoiceTrait;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 
 {
+
+    use InvoiceTrait;
+
 
     /**
      * Display a listing of the resource.
@@ -34,51 +40,30 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
+        // return $request->validated();
         $order = Order::create([
             'user_id' => auth()->user()->id,
             'shipping_date' => $request->shipping_date,
             'delivery_date' => $request->delivery_date,
-
-
+            'status' => $request->status,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
         foreach (array_count_values($request->products) as $product_id => $count) {
 
             $order->products()->attach($product_id, ['quantity' => $count]);
         }
-
         $products = Product::whereIn('id', $request['products'])->get();
-
-        $total = $products->sum->price;
-
         $taxes = Tax::whereIn('id', $request['taxes'])->get();
-        $totalTax = $taxes->sum->rate * ($total / 100);
 
-        $discount = 0;
+        $invoice = $this->saveInvoice($products, $taxes);
 
-        if ($products->count() >= 5) {
-            $discount = ($total * 10) / 100;
-            $sub_total = $total - $discount + $totalTax;
-        } else {
-            $sub_total = $total + $totalTax;
-        }
 
-        $invoice = Invoice::create(
-            [
-                'invoice_number' => uniqid(),
-                'total_amount' => $total,
-                'user_id' => auth()->user()->id,
-                'sub_total' => $sub_total,
-                'discount' =>  $discount,
-                'invoiceDate' => getdate()['year'] . '-' . getdate()['mon'] . '-' . getdate()['mday'],
-            ]
-        );
-        $invoice->products()->attach($request->products);
-        $invoice->taxes()->attach($request->taxes);
 
         // return $order;
 
-        return $this->handleResponse(new OrderResource($order), __('messages.order_created'), 201);
+        return $this->handleResponse(new OrderResource($order), new InvoiceResource($invoice), 201);
     }
 
     /**
@@ -108,18 +93,16 @@ class OrderController extends Controller
             'user_id' => auth()->user()->id,
             'shipping_date' => $request->shipping_date,
             'delivery_date' => $request->delivery_date,
-            'status'  => $request->status,
+
         ]);
+        foreach (array_count_values($request->products) as $product_id => $count) {
 
-        $order->products()->sync($request->products);
-        foreach ($order->products as $product) {
-            if ($product->pivot->product_id == $product->pivot->product_id + 1) {
-                $product->pivot->quantity = $product->pivot->quantity + 1;
-                $product->pivot->save();
-            }
+            $order->products()->sync($product_id, ['quantity' => $count]);
         }
-
-        return $this->handleResponse(new OrderResource($order), __('messages.order_updated'));
+        $products = Product::whereIn('id', $request['products'])->get();
+        $taxes = Tax::whereIn('id', $request['taxes'])->get();
+        $invoice = $this->saveInvoice($products, $taxes);
+        return $this->handleResponse(new OrderResource($order), new InvoiceResource($invoice), __('messages.order_updated'));
     }
 
     /**
@@ -133,5 +116,50 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
         $order->delete();
         return $this->handleResponse(__('messages.order_deleted'), 204);
+    }
+
+    public function getOrdersByUser()
+    {
+        $orders = Order::where('user_id', auth()->user()->id)->get();
+        return $this->handleResponse(new OrderResource($orders), 200);
+    }
+
+    public function getOrdersByUserAndStatus($status)
+    {
+        $orders = Order::where('user_id', auth()->user()->id)->where('status', $status)->get();
+        return $this->handleResponse(new OrderResource($orders), 200);
+    }
+
+    public function assignDelivery(Request $request, $id)
+    {
+
+
+        $order = Order::findOrFail($id);
+        $order->update([
+            'delivery_id' => $request->delivery_id,
+        ]);
+        return $this->handleResponse(__('messages.order_updated'), 200);
+    }
+
+
+    public function changeStatus(int $id)
+    {
+        // $order = Order::find($id);
+        return "works";
+    }
+
+    public function assignDeliveryToOrder(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+        $lantitude = $request->latitude;
+        $longitude = $request->longitude;
+        // $user = Order::where('latitude', $lantitude)->where('longitude', $longitude);
+
+        $delivery_id = Delivery::scopeDistance($lantitude, $longitude)->first()->id;
+
+        $order->update([
+            'delivery_id' => $delivery_id,
+        ]);
+        // return $this->handleResponse(__('messages.order_updated'), 200);
     }
 }

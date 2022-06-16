@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderRequest extends FormRequest
+class DeliveryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,28 +24,12 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-
-            'products' => 'required|array | min:1 | max:10',
-            'products.*' => 'required|exists:products,id',
-            'user_id' => 'exists:users,id',
-            'shipping_date' => 'required|date',
-            'delivery_date' => 'required|date',
-            'status' => 'string',
-            'delivery_id' => 'exists:deliveries,id|nullable',
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
             'latitude' => 'required|string|max:255',
             'longitude' => 'required|string|max:255',
 
-
-
-
-
         ];
-    }
-
-    public function prepareForValidation()
-    {
-        return $this->merge([
-            'status' => 'pending',
-        ]);
     }
 }

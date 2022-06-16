@@ -16,6 +16,7 @@ use App\Http\Controllers\API\Admin\{
     Auth\LoginController as AdminLoginController
 };
 use App\Http\Controllers\API\Admin\Roles\RoleController;
+use App\Http\Controllers\API\DeliveryController;
 use App\Http\Controllers\API\User\{
     Auth\LoginController as UserLoginController,
 };
@@ -86,6 +87,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/order', [OrderController::class, 'store'])->middleware('localization');
     Route::put('/orders/{id}', [OrderController::class, 'update'])->middleware('localization');
     Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->middleware('localization');
+    Route::post('/order/change-status/{id}', [OrderController::class, 'changeStatus'])->middleware('localization');
+    Route::post('/order/assign-delivery/{id}', [OrderController::class, 'assignDeliveryToOrder'])->middleware('localization');
+
 
     Route::get('/invoices', [InvoiceController::class, 'index'])->middleware('localization');
     Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->middleware('localization');
@@ -117,4 +121,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/tax', [TaxController::class, 'store'])->middleware('localization');
     Route::put('/taxes/{id}', [TaxController::class, 'update'])->middleware('localization');
     Route::delete('/taxes/{id}', [TaxController::class, 'destroy'])->middleware('localization');
+
+
+    Route::get('/deliveries', [DeliveryController::class, 'index'])->middleware('localization');
+    Route::get('/deliveries/{id}', [DeliveryController::class, 'show'])->middleware('localization');
+    Route::post('/delivery', [DeliveryController::class, 'store'])->middleware('localization');
+    Route::put('/deliveries/{id}', [DeliveryController::class, 'update'])->middleware('localization');
+    Route::delete('/deliveries/{id}', [DeliveryController::class, 'destroy'])->middleware('localization');
 });

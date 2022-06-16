@@ -16,18 +16,20 @@ class InvoiceResource extends JsonResource
     {
 
         return [
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'status' => $this->status,
+
             'invoice_number' => $this->invoice_number,
             'total_amount' => $this->total_amount,
             'sub_total' => $this->sub_total,
             'discount' => $this->discount,
             'invoiceDate' => $this->invoiceDate,
-            'products' => $this->products()->get(),
-            'taxes' => $this->taxes()->get(),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+
+            'taxes' => $this->taxes()->get()->map(function ($tax) {
+                return [
+                    'name' => $tax->name,
+                    'amount' => $tax->rate,
+                ];
+            }),
+
         ];
     }
 }
