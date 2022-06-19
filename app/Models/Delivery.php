@@ -38,7 +38,20 @@ class Delivery extends Model
                 * cos(radians(longitude) - radians($longitude)) 
                 + sin(radians($latitude)) 
                 * sin(radians(latitude)))) AS distance")
-            ->having('distance', '<', 10)
+          
+            ->groupBy('id')
             ->orderBy('distance');
     }
 }
+// $data = DB::table("users")
+//     ->select(
+//         "users.id",
+//         DB::raw("6371 * acos(cos(radians(" . $latitude . ")) 
+//     * cos(radians(users.lat)) 
+//     * cos(radians(users.lon) - radians(" . $longitude . ")) 
+//     + sin(radians(" . $latitude . ")) 
+//     * sin(radians(users.lat))) AS distance")
+//     )
+//     ->groupBy("users.id")
+//     ->get();
+// dd($data);

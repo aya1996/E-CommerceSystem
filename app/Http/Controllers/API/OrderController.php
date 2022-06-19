@@ -151,15 +151,19 @@ class OrderController extends Controller
     public function assignDeliveryToOrder(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        $lantitude = $request->latitude;
-        $longitude = $request->longitude;
-        // $user = Order::where('latitude', $lantitude)->where('longitude', $longitude);
+        
+        $latitude = $order->where('id', $id)->value('latitude');
+        $longitude = $order->where('id', $id)->value('longitude');
 
-        $delivery_id = Delivery::scopeDistance($lantitude, $longitude)->first()->id;
+        $status = $request->status;
+
+        $delivery_id = Delivery::Distance($latitude, $longitude)->first()->id;
+        // return $delivery_id;
 
         $order->update([
             'delivery_id' => $delivery_id,
+            'status' => $status,
         ]);
-        // return $this->handleResponse(__('messages.order_updated'), 200);
+        return $this->handleResponse($order, __('messages.order_updated'), 200);
     }
 }

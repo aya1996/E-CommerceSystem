@@ -41,10 +41,5 @@ class Order extends Model
     }
 
 
-    public function scopeUserLocation($query, $latitude, $longitude)
-    {
-        
-        
-    }
-    
+   
 }
