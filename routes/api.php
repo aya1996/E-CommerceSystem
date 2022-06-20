@@ -91,6 +91,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/order/assign-delivery/{id}', [OrderController::class, 'assignDeliveryToOrder'])->middleware('localization');
     Route::post('/order/cancel-order/{id}', [OrderController::class, 'cancelOrder'])->middleware('localization');
     Route::get('/order/get-cancel-order', [OrderController::class, 'getCancelledOrders'])->middleware('localization');
+    Route::get('/order/weekly-report', [OrderController::class, 'getWeeklyReport'])->middleware('localization');
+    Route::get('/order/monthly-report', [OrderController::class, 'getMonthlyReport'])->middleware('localization');
+    Route::get('/order/annually-report', [OrderController::class, 'getAnnuallyReport'])->middleware('localization');
+
 
 
 

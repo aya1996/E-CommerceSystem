@@ -194,4 +194,40 @@ class OrderController extends Controller
         $orders = Order::where('status', 'cancelled')->get();
         return $this->handleResponse(new OrderResource($orders), 200);
     }
+
+    public function getWeeklyReport()
+    {
+        $orders = Order::where('status', 'delivered')->get();
+        $orders = $orders->groupBy(function ($item) {
+            return Carbon::parse($item->shipping_date)->format('Y-m-d');
+        });
+        $orders = $orders->map(function ($item) {
+            return $item->count();
+        });
+        return $this->handleResponse($orders, 200);
+    }
+
+    public function getMonthlyReport()
+    {
+        $orders = Order::where('status', 'delivered')->get();
+        $orders = $orders->groupBy(function ($item) {
+            return Carbon::parse($item->shipping_date)->format('Y-m');
+        });
+        $orders = $orders->map(function ($item) {
+            return $item->count();
+        });
+        return $this->handleResponse($orders, 200);
+    }
+
+    public function getAnnuallyReport()
+    {
+        $orders = Order::where('status', 'delivered')->get();
+        $orders = $orders->groupBy(function ($item) {
+            return Carbon::parse($item->shipping_date)->format('Y');
+        });
+        $orders = $orders->map(function ($item) {
+            return $item->count();
+        });
+        return $this->handleResponse($orders, 200);
+    }
 }
