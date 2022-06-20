@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Tax::factory(5)->create();
         \App\Models\Transaction::factory(5)->create();
         \App\Models\Delivery::factory(5)->create();
-        \App\Models\Order::factory(5)->create();
+        \App\Models\Order::factory(100)->create();
 
 
 

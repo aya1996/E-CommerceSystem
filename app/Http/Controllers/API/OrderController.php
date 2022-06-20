@@ -11,7 +11,9 @@ use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Tax;
+use App\Models\Transaction;
 use App\Traits\InvoiceTrait;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -151,7 +153,7 @@ class OrderController extends Controller
     public function assignDeliveryToOrder(Request $request, $id)
     {
         $order = Order::findOrFail($id);
-        
+
         $latitude = $order->where('id', $id)->value('latitude');
         $longitude = $order->where('id', $id)->value('longitude');
 
@@ -165,5 +167,31 @@ class OrderController extends Controller
             'status' => $status,
         ]);
         return $this->handleResponse($order, __('messages.order_updated'), 200);
+    }
+
+
+    public function cancelOrder(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+        $shipping_date = Carbon::parse($order->shipping_date);
+        $current = Carbon::now();
+        // return $shipping_date->diffInDays($current, true);
+
+        if ($shipping_date->diffInDays($current, true) == 1) {
+            return $this->handleError(__('messages.order_cannot_cancelled'));
+        }
+        $order->update([
+            'status' => 'cancelled',
+        ]);
+
+
+
+        return $this->handleResponse($order, __('messages.order_canceled'), 200);
+    }
+
+    public function getCancelledOrders()
+    {
+        $orders = Order::where('status', 'cancelled')->get();
+        return $this->handleResponse(new OrderResource($orders), 200);
     }
 }

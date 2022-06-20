@@ -89,6 +89,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->middleware('localization');
     Route::post('/order/change-status/{id}', [OrderController::class, 'changeStatus'])->middleware('localization');
     Route::post('/order/assign-delivery/{id}', [OrderController::class, 'assignDeliveryToOrder'])->middleware('localization');
+    Route::post('/order/cancel-order/{id}', [OrderController::class, 'cancelOrder'])->middleware('localization');
+    Route::get('/order/get-cancel-order', [OrderController::class, 'getCancelledOrders'])->middleware('localization');
+
 
 
     Route::get('/invoices', [InvoiceController::class, 'index'])->middleware('localization');
@@ -103,6 +106,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/transaction', [TransactionsController::class, 'store'])->middleware('localization');
     Route::put('/transactions/{id}', [TransactionsController::class, 'update'])->middleware('localization');
     Route::delete('/transactions/{id}', [TransactionsController::class, 'destroy'])->middleware('localization');
+    Route::get('/canceled-transactions', [TransactionsController::class, 'getCanceledTransactions'])->middleware('localization');
+    Route::post('/is-refunded/{id}', [TransactionsController::class, 'isRefunded'])->middleware('localization');
+
 
     Route::get('/colors', [ColorController::class, 'index'])->middleware('localization');
     Route::get('/colors/{id}', [ColorController::class, 'show'])->middleware('localization');

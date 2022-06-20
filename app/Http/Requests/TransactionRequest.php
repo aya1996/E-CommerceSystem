@@ -24,14 +24,14 @@ class TransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'exists:users,id',
             'transaction_id' => 'unique:transactions,transaction_id',
-            'payment_method.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
-            'payment_method.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
-            'payment_status.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
-            'payment_status.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
-            'payment_currency.en' => 'required|string|regex:/^[a-zA-Z 0-9 ]+$/u',
-            'payment_currency.ar'         => 'required|string|regex:/^[\p{Arabic} 0-9 ]+$/u',
+            'payment_method' => 'required|in:credit_card,debit_card,paypal',
+
+            'payment_status' => 'required|string|in:paid,pending,cancelled',
+
+            'payment_currency' => 'required|string',
+
             'payment_amount' => 'exists:invoices,sub_total',
             'payment_date' => 'required|date',
 

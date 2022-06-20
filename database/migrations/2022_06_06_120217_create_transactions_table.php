@@ -16,16 +16,17 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->morphs('transactionable');
             $table->string('transaction_id')->unique();
             $table->string('payment_method');
+            $table->boolean('is_refunded')->default(false);
             $table->string('payment_status');
             $table->float('payment_amount');
             $table->string('payment_currency');
             $table->date('payment_date');
 
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+
             $table->timestamps();
         });
     }

@@ -17,13 +17,14 @@ class TransactionFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => $this->faker->numberBetween(1, 10),
+            'transactionable_id' => $this->faker->numberBetween(1, 10),
+            'transactionable_type' => $this->faker->randomElement(['App\Models\User', 'App\Models\Admin']),
             'transaction_id' => uniqid(),
             'payment_method' => $this->faker->randomElement(['credit_card', 'debit_card', 'paypal']),
             'payment_status' => $this->faker->randomElement(['paid', 'pending', 'cancelled']),
             'payment_amount' => $this->faker->numberBetween(1, 100),
             'payment_currency' => $this->faker->word,
-            'payment_date' => $this->faker->dateTimeBetween('2020-01-01', '2020-12-31'),
+            'payment_date' => $this->faker->dateTimeBetween('now', '+1 year'),
 
         ];
     }

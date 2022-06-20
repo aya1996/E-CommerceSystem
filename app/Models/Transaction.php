@@ -16,8 +16,8 @@ class Transaction extends Model
 
 
 
-    public function user()
+    public function transactionable()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
 }
