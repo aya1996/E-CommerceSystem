@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TransactionRequest;
@@ -83,23 +83,21 @@ class TransactionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TransactionRequest $request, $id)
     {
         $transaction = Transaction::find($id);
 
         if (!$transaction)
             return $this->handleResponse(null, __('messages.transaction_not_found'), 404);
-
-        $transaction->update([
-            'user_id' => auth()->user()->id,
-            'transaction_id' => uniqid(),
-            'payment_method' => $request->payment_method,
-            'payment_status' => $request->payment_status,
-            'payment_amount' => Invoice::find($request->user_id)->sub_total,
-            'payment_currency' => $request->payment_currency,
-            'payment_date' => $request->payment_date,
-
-        ]);
+        $transaction = new Transaction();
+        $transaction->transaction_id = uniqid();
+        $transaction->payment_method = $request->payment_method;
+        $transaction->payment_status = $request->payment_status;
+        $transaction->payment_amount = Invoice::find(auth()->user()->id)->sub_total;
+        $transaction->payment_currency = $request->payment_currency;
+        $transaction->payment_date = $request->payment_date;
+        $transaction->transactionable()->associate(auth()->user());
+        $transaction->save();
 
 
         return $this->handleResponse($transaction, __('messages.transaction_updated'), 200);
@@ -129,18 +127,32 @@ class TransactionsController extends Controller
 
         return $this->handleResponse($transactions, 200);
     }
-    public function isRefunded($id)
+
+    public function isRefunded(TransactionRequest $request, $id)
     {
         $transaction = Transaction::find($id);
 
         if (!$transaction)
             return $this->handleResponse(null, __('messages.transaction_not_found'), 404);
+        $transaction = new Transaction();
+        $transaction->transaction_id = uniqid();
+        $transaction->payment_method = $request->payment_method;
+        $transaction->is_refunded = true;
+        $transaction->payment_status = $request->payment_status;
+        $transaction->payment_amount = Invoice::find(auth()->user()->id)->sub_total;
+        $transaction->payment_currency = $request->payment_currency;
+        $transaction->payment_date = $request->payment_date;
+        $transaction->transactionable()->associate(auth()->user());
+        $transaction->save();
 
-        $transaction->update([
-            'is_refunded' => 1,
-            'payment_status' => 'refunded',
-        ]);
 
         return $this->handleResponse($transaction, __('messages.transaction_refunded'), 200);
+    }
+
+    public function getRefundedTransactions()
+    {
+        $transactions = Transaction::where('is_refunded', 1)->get();
+
+        return $this->handleResponse($transactions, 200);
     }
 }

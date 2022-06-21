@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
@@ -228,6 +228,20 @@ class OrderController extends Controller
         $orders = $orders->map(function ($item) {
             return $item->count();
         });
+        return $this->handleResponse($orders, 200);
+    }
+
+    public function filterOrdersByStatus()
+    {
+        $orders = Order::all();
+        $orders = $orders->groupBy(function ($item) {
+            return $item->status;
+        });
+        $orders = $orders->map(function ($item) {
+            return $item->count();
+        });
+
+
         return $this->handleResponse($orders, 200);
     }
 }

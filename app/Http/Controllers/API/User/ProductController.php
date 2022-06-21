@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
@@ -16,13 +16,6 @@ class ProductController extends Controller
     use ImageTrait;
 
 
-    public function __construct()
-    {
-        $this->middleware('permission:view-product|create-product|edit-product|delete-product', ['only' => ['index', 'store']]);
-        $this->middleware('permission:create-product', ['only' => ['create', 'store']]);
-        $this->middleware('permission:edit-product', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:delete-product', ['only' => ['destroy']]);
-    }
 
     public function index()
     {
@@ -54,99 +47,7 @@ class ProductController extends Controller
         return $this->handleResponse(new ProductResource(Product::find($id)), 200);
     }
 
-    public function store(ProductRequest $request)
-    {
-        // return $request->all();
-        // return $request->name['ar'];
-        $product = new Product();
-        $product->setTranslations('name', $request->name);
-        // $product->setTranslations('name', $request->name['ar']);
 
-        // return $product;
-
-        $product->price = $request->price;
-        $product->setTranslations('description', $request->description);
-        // $product->description->setTranslations('ar', $request->description);
-
-        if ($request->hasfile('feature_image')) {
-            $name = $this->saveImage($request->file('feature_image'));
-            $product->feature_image = $name;
-        }
-        $product->save();
-        if ($request->hasfile('images')) {
-
-            foreach ($request->file('images') as $image) {
-                $images[] = $this->saveImages($image);
-            }
-
-            $image = new Image();
-            $image->path = json_encode($images);
-            $image->product_id = $product->id;
-        }
-        $image->save();
-
-        $product->categories()->attach($request->categories);
-        $product->colors()->attach($request->colors);
-        $product->sizes()->attach($request->sizes);
-
-        return $this->handleResponse(new ProductResource($product), __('messages.product_added'), 201);
-    }
-
-    public function update(ProductRequest $request, $id)
-    {
-
-
-        $product = Product::find($id);
-        if ($product) {
-            $product->setTranslations('name', $request->name);
-            $product->price = $request->price;
-            $product->setTranslations('description', $request->description);
-
-            $product->save();
-
-            if ($request->hasfile('feature_image')) {
-                File::delete(public_path('images/' . $product->feature_image));
-                $image = $request->file('feature_image');
-                $name = $this->saveImage($image);
-                $product->feature_image = $name;
-            }
-            $product->save();
-
-            if ($request->hasfile('images')) {
-                File::delete(public_path('images/' . $product->images));
-                foreach ($request->file('images') as $image) {
-                    // $name = $image->getClientOriginalName();
-                    $images[] = $this->saveImages($image);
-                }
-
-                $image = new Image();
-                $image->path = json_encode($images);
-                $image->product_id = $product->id;
-            }
-
-
-            $product->categories()->sync($request->categories);
-            $product->colors()->sync($request->colors);
-            $product->sizes()->sync($request->sizes);
-
-            return $this->handleResponse(new ProductResource($product), __('messages.product_updated'), 200);
-        } else {
-            return $this->handleError(__('messages.product_not_found'), [], 404);
-        }
-    }
-
-    public function destroy($id)
-    {
-        $product = Product::find($id);
-        if ($product) {
-            $product->delete();
-            File::delete(public_path('images/' . $product->feature_image));
-            File::delete(public_path('images/' . $product->images));
-            return $this->handleResponse(__('messages.product_deleted_successfully'), 200);
-        } else {
-            return $this->handleError(__('messages.product_not_found'), [], 404);
-        }
-    }
 
 
 
