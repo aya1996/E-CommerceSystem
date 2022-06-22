@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\API\Admin;
+use App\Actions\CategoryFilter;
+use App\Actions\ColorFilter;
+use App\Actions\PriceFilter;
+use App\Actions\SizeFilter;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
@@ -9,6 +13,7 @@ use App\Models\Image;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
@@ -26,27 +31,45 @@ class ProductController extends Controller
 
     public function index()
     {
-        $productCategory = Product::query()->when(request('category_id'), function ($query) {
-            return $query->whereHas('categories', function ($query) {
-                return $query->where('category_id', request('category_id'));
-            });
-        })->when(request('size_id'), function ($query) {
-            return $query->whereHas('sizes', function ($query) {
-                return $query->where('size_id', request('size_id'));
-            });
-        })->when(request('color_id'), function ($query) {
-            return $query->whereHas('colors', function ($query) {
-                return $query->where('color_id', request('color_id'));
-            });
-        })->when(request('price'), function ($query) {
-            return $query->where('price', '>=', request('price'));
-        })->when(request('price_to'), function ($query) {
-            return $query->where('price', '<=', request('price_to'));
-        })->paginate(5);
+        // $productCategory = Product::query()->when(request('category_id'), function ($query) {
+        //     return $query->whereHas('categories', function ($query) {
+        //         return $query->where('category_id', request('category_id'));
+        //     });
+        // })->when(request('size_id'), function ($query) {
+        //     return $query->whereHas('sizes', function ($query) {
+        //         return $query->where('size_id', request('size_id'));
+        //     });
+        // })->when(request('color_id'), function ($query) {
+        //     return $query->whereHas('colors', function ($query) {
+        //         return $query->where('color_id', request('color_id'));
+        //     });
+        // })->when(request('price'), function ($query) {
+        //     return $query->where('price', '>=', request('price'));
+        // })->when(request('price_to'), function ($query) {
+        //     return $query->where('price', '<=', request('price_to'));
+        // })->paginate(5);
 
-        return ProductResource::collection($productCategory);
+        // return ProductResource::collection($productCategory);
 
-        // return $this->handleResponse(ProductResource::collection(Product::all()), 200);
+        // // return $this->handleResponse(ProductResource::collection(Product::all()), 200);
+
+        $products = app(Pipeline::class)
+        ->send(Product::query())
+        ->through([
+            CategoryFilter::class,
+            SizeFilter::class,
+            ColorFilter::class,
+            PriceFilter::class,
+
+
+        ])
+        ->thenReturn()
+        ->paginate(5);
+
+
+
+
+    return  ProductResource::collection($products);
     }
 
     public function show($id)
