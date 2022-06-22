@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\API\Admin;
+
 use App\Actions\CategoryFilter;
 use App\Actions\ColorFilter;
+use App\Actions\NameFilter;
 use App\Actions\PriceFilter;
 use App\Actions\SizeFilter;
 
@@ -54,22 +56,22 @@ class ProductController extends Controller
         // // return $this->handleResponse(ProductResource::collection(Product::all()), 200);
 
         $products = app(Pipeline::class)
-        ->send(Product::query())
-        ->through([
-            CategoryFilter::class,
-            SizeFilter::class,
-            ColorFilter::class,
-            PriceFilter::class,
+            ->send(Product::query())
+            ->through([
+                CategoryFilter::class,
+                SizeFilter::class,
+                ColorFilter::class,
+                PriceFilter::class,
+                NameFilter::class,
 
 
-        ])
-        ->thenReturn()
-        ->paginate(5);
+            ])
+            ->thenReturn();
+          
 
 
 
-
-    return  ProductResource::collection($products);
+        return  ProductResource::collection($products);
     }
 
     public function show($id)

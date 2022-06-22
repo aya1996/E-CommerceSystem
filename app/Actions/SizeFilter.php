@@ -14,8 +14,8 @@ class SizeFilter
         $builder = $next($request);
 
         return $builder->whereHas('sizes', function ($query) {
-            return $query->where('size_id', request('size_id'));
+            // return $query->where('size_id', request('size_id'));
+            return $query->whereIn('size_id', request('size_id'));
         });
-    
     }
 }

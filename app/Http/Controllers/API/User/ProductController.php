@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\User;
 
 use App\Actions\CategoryFilter;
 use App\Actions\ColorFilter;
+use App\Actions\NameFilter;
 use App\Actions\PriceFilter;
 use App\Actions\SizeFilter;
 use App\Http\Controllers\Controller;
@@ -53,11 +54,13 @@ class ProductController extends Controller
                 SizeFilter::class,
                 ColorFilter::class,
                 PriceFilter::class,
+                NameFilter::class,
 
 
             ])
             ->thenReturn()
-            ->paginate(5);
+            ->get();
+
 
 
 

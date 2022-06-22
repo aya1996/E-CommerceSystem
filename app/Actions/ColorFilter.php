@@ -14,7 +14,8 @@ class ColorFilter
         $builder = $next($request);
 
         return $builder->whereHas('colors', function ($query) {
-            return $query->where('color_id', request('color_id'));
+            // return $query->where('color_id', request('color_id'));
+            return $query->whereIn('color_id', request('color_id'));
         });
     }
 }
