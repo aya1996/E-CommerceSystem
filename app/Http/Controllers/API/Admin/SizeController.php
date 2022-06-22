@@ -113,4 +113,6 @@ class SizeController extends Controller
             return $this->handleError(__('messages.size_not_found'), [], 404);
         }
     }
+
+    
 }
